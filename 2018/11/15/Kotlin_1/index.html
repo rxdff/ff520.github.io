@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="ff520">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="ff520">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Kotlin 语法指北 · ff520 Blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href="/avatar/saber.jpeg">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin="">
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin="">
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/">ff520 Blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Kotlin 语法指北</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href="/">ff520 Blog.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3140065668,2525653230&fm=26&gp=0.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Kotlin 语法指北
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class="post-intro-tags">
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="Kotlin">Kotlin</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">2.1k</span>阅读时长: <span class="post-count reading-time">8 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/11/15</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="Kotlin-语法指北-一"><a href="#Kotlin-语法指北-一" class="headerlink" title="Kotlin 语法指北(一)"></a>Kotlin 语法指北(一)</h1><h2 id="初识Kotlin"><a href="#初识Kotlin" class="headerlink" title="初识Kotlin"></a>初识Kotlin</h2><h2 id="Kotlin基础类型"><a href="#Kotlin基础类型" class="headerlink" title="Kotlin基础类型"></a>Kotlin基础类型</h2><p>###变量</p>
+<p>声明变量需要使用var或者val</p>
+<blockquote>
+<p>var|val 变量名 : 类型 = 初始值</p>
+</blockquote>
+<p>var声明的变量是可变的，val声明的变量是不可变的（不能被重新赋值）。</p>
+<p>其中声明的类型是可以被省略的，当一个变量被赋予初始值，编译器可通过初始值推断出变量类型时，那么变量类型可以被省略。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var name = &quot;张三&quot;</span><br><span class="line">    name = &quot;李四&quot; //var 可以被重新赋值</span><br><span class="line">    name = 1 //初始化时推断出为String类型，那么不能在赋值为int</span><br><span class="line">    val age = 12</span><br><span class="line">    age = 11 //val不能被重新赋值</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="整形"><a href="#整形" class="headerlink" title="整形"></a>整形</h3><p>与Java类似，Kotlin也提供4种整形,同时兼容Java的整形。</p>
+<ul>
+<li>Btye:Byte类型在内存中占8位，表数范围是-2^7~2^7-1。</li>
+<li>Short:Short类型在内存中占16位，表数范围-2^15~2^15-1。</li>
+<li>Int:Int类型在内存中占32位，表数范围是-2^32~2^31-1。</li>
+<li>Long:Long类型在内存中占64位，表数范围是-2^63~2^63-1</li>
+</ul>
+<p>需要注意的是 Kotlin中整形都不是基本类型，都继承Number类型，相当于Java的整形包装类。</p>
+<p>Kotlin是null安全的语言，所以Byte,Short,Int,Long都不接受null类型。如果要赋值null，可以用?进行追加，即Byte?,Short?,Int?,Long? 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var i1: Int = null //Int不接受null</span><br><span class="line">    var i2: Int? = null //Int?接受null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整数类型后追加?还有一个问题，普通整形变量将映射为Java的基本类型，而带?的整形变量将映射为Java的包装类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var i1 = 200</span><br><span class="line">    var i2: Int? = 200</span><br><span class="line">    var i3: Int = 200</span><br><span class="line">    var i4: Int? = 200</span><br><span class="line"></span><br><span class="line">    println(i1=== i2)//false</span><br><span class="line">    println(i1 == i2)//true</span><br><span class="line">    println(i1 === i3)//true</span><br><span class="line">    println(i1 == i3)//true</span><br><span class="line">    println(i2 === i4)//false</span><br><span class="line">    println(i2 == i4)//true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于===与==区别:</p>
+<p>==比较的是数值是否相等, 而===比较的是两个对象的地址是否相等。</p>
+<p>i1===i3 之所以为true,在java 平台上，数值被JVM虚拟机以字节码的方式物理存储的。所以i1,i3就是个数值，不涉及对象，所以===为true。</p>
+<p>Kotlin的整数数值有三种表示方式</p>
+<ul>
+<li>十进制:最普通的整数数值就是十进制整数。</li>
+<li>二进制:以0b或0B开头的整数数值就是二进制整数。例如0b101010</li>
+<li>十六进制:以0x或0X开头的整数数值就是十六进制的整数就是十六进制整数。例如0x486cdc</li>
+</ul>
+<font color="red">注意:Kotlin不支持八进制的整数。</font>
+
+<p>Kotlin为了提高数值可读性，允许为数值增加下划线作为分隔符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var i1 = 123_456_789//等同于123456789</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h3><p>浮点型数值可以包含小数部分，浮点型比整形表数范围更大。Kotlin的浮点型有两种。</p>
+<ul>
+<li>Float:表示32位的浮点型，精度要求不高时可以使用此类型。</li>
+<li>Double:表示64位双精度的浮点型，精度比Float更高。</li>
+</ul>
+<p>浮点型表示方式有两种。</p>
+<ul>
+<li>十进制数形式。例如3.14f,52.0,0.52等，浮点型必须包含一个小数点，否则会被当成整形处理。</li>
+<li>科学计数形式。例如5.2e2(即5.2*10^2),只有浮点型才可使用科学计数形式。</li>
+</ul>
+<h3 id="字符型"><a href="#字符型" class="headerlink" title="字符型"></a>字符型</h3><p>字符型通常用于表示单个自负，字符类型必须使用单引号(‘)括起来。<br>字符型有三种表示形式。</p>
+<ul>
+<li>通过单个字符来指定字符类型。例如’A’,’b’,’1’等。</li>
+<li>通过转义字符表示特殊字符类型，例如’\n’,’\t’等。</li>
+<li>使用Unicode表示字符值，例如’\u0000’等。</li>
+</ul>
+<h3 id="数值型之间的类型转换"><a href="#数值型之间的类型转换" class="headerlink" title="数值型之间的类型转换"></a>数值型之间的类型转换</h3><h4 id="整形之间的转换"><a href="#整形之间的转换" class="headerlink" title="整形之间的转换"></a>整形之间的转换</h4><p>Kotlin不支持取值范围小的类型隐性转换为取值大的类型。</p>
+<p>不同整型之间的转换需通过Number类提供的若干方法进行转换。</p>
+<ul>
+<li>toByte:转换为Byte。</li>
+<li>toShort:转换为thort。</li>
+<li>toInt:转换为Int。</li>
+<li>toLong:转换为Long。</li>
+<li>toFloat:转换为Float。</li>
+<li>toDouble:转换为Double。</li>
+<li>toChar:转换为Char。</li>
+</ul>
+<h4 id="浮点型与整形之间的转换"><a href="#浮点型与整形之间的转换" class="headerlink" title="浮点型与整形之间的转换"></a>浮点型与整形之间的转换</h4><p>浮点型与整形之间的转换与整形之间的转换也需要显示转换。</p>
+<h4 id="表达式用的类型提示"><a href="#表达式用的类型提示" class="headerlink" title="表达式用的类型提示"></a>表达式用的类型提示</h4><p>算术表达式中的Byte和Short会自动被Kotlin升为Int类型在进行计算，如果算数表达式中有比Int类型取值范围大的，那么则转换为最大取值范围在进行计算。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var b1: Byte = 3</span><br><span class="line">    var s1: Short = 5</span><br><span class="line">    var f1 = 5.2f</span><br><span class="line">    var d1 = 2.5</span><br><span class="line">    println(f1.javaClass)//float</span><br><span class="line">    println(d1.javaClass)//double</span><br><span class="line">    println(b1.javaClass)//byte</span><br><span class="line">    println(s1.javaClass)//short</span><br><span class="line">    println((f1 + d1).javaClass)//double</span><br><span class="line">    println((b1 + s1).javaClass)//int</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总之一句话总结，表达式中的类型将严格保持和最高等级操作数相同的类型，如果最高操作数等级不足Int类型，那么将提升到Int类型。</p>
+<h3 id="Boolean类型"><a href="#Boolean类型" class="headerlink" title="Boolean类型"></a>Boolean类型</h3><p>布尔型只有一个Boolean类型，用于表示逻辑上的’真’或’假’，只能用true或false表示，不能用0或1表示。<br>Boolean类型不接受null类型，如果Boolean为null，那么需要使用?关键字。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var b1: Boolean? = null</span><br><span class="line">    if (b1) &#123;//编译不会通过</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="null安全"><a href="#null安全" class="headerlink" title="null安全"></a>null安全</h3><p>null安全可以说是Kotlin对Java的重大改进，可以避免NullPointerException(NPE)。</p>
+<h4 id="非空类型与可空类型"><a href="#非空类型与可空类型" class="headerlink" title="非空类型与可空类型"></a>非空类型与可空类型</h4><p>可空类型与不可空类型的区别就是多了一个?关键字。如果一个类型加了?关键字，那么他就是可空类型，可以接受null值。<br>Kotlin对可空类型进行了限制，如果不加任何处理，可空类型不允许直接调用方法，访问属性。因此，Kotlin可在程序中避免空指针异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var i1: Int = 1 //不可空类型</span><br><span class="line">    var i2: Int? = null//可空类型</span><br><span class="line">    var i3 = &quot;&quot;.toIntOrNull()//可空类型</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="安全调用"><a href="#安全调用" class="headerlink" title="安全调用 ?."></a>安全调用 ?.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var b: String? = &quot;abc&quot;</span><br><span class="line">    println(b?.length?.toByte())//打印3</span><br><span class="line">    b = null</span><br><span class="line">    println(b?.length?.toByte())//打印null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上面的例子可以看到，对于可空类型，使用?.是可以访问方法属性的，并且当对象为null时，会返回一个null,并且多层?.也是没问题的。</p>
+<h4 id="Elvis运算"><a href="#Elvis运算" class="headerlink" title="Elvis运算 ?:"></a>Elvis运算 ?:</h4><p>将上一个例子改一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var b: String? = &quot;abc&quot;</span><br><span class="line">    println(b?.length?.toByte())//打印3</span><br><span class="line">    b = null</span><br><span class="line">    println(b?.length?:&quot;b为null&quot;)//打印b为null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>?:的含义就是如果?:左边表达式的值不为null，则返回左边的值，否则返回?:右边的值。就是if分支的简化写法。</p>
+<h4 id="强制调用"><a href="#强制调用" class="headerlink" title="强制调用"></a>强制调用</h4><p>对用可空类型来说，可以使用!!.来强制调用可空类型对象的方法和属性的。但是可能会导致NPE。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var b: String? = &quot;abc&quot;</span><br><span class="line">    println(b!!.length)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>字符串时一种快速，现代化的字符串实现，字符串中每一个字符都由Unicode字符组成。可使用s[i]来拿到字符。</p>
+<p>Kotlin字符串分成两种</p>
+<ul>
+<li>转义字符串:转义字符串可以有转移字符，转义字符很像Java字符串</li>
+<li>原始字符串:原始字符串可以包含换行和任意文本，原始字符串需要用三个”括起来。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var text1 = &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">       \n abc</span><br><span class="line">       \n ttt</span><br><span class="line">   &quot;&quot;&quot;.trimIndent()</span><br><span class="line">    var text2 = &quot;\nahjka&quot;</span><br><span class="line">    println(text1[0])</span><br><span class="line">    println(text2[0])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串模版"><a href="#字符串模版" class="headerlink" title="字符串模版"></a>字符串模版</h3><p>Kotlin允许字符串中嵌入变量或表达式，只要将变量或表达式放入${}中即可。Kotlin会把变量或者表达式的值嵌入该字符串中。</p>
+<p>字符串模版不仅可在转义字符串中使用，也可在原始字符串中使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line"></span><br><span class="line">    var random = java.util.Random()</span><br><span class="line">    var text1 = &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">       \n abc</span><br><span class="line">       \n $&#123;random.nextInt(20)&#125;</span><br><span class="line">   &quot;&quot;&quot;.trimIndent()</span><br><span class="line">    var text2 = &quot;\n$&#123;random.nextInt(10)&#125;&quot;</span><br><span class="line">    println(text1)</span><br><span class="line">    println(text2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="类型别名"><a href="#类型别名" class="headerlink" title="类型别名"></a>类型别名</h3><p>Kotlin提供了类似于C语言中的typedef功能，可以为已有的类型指定另一个可读性更强的名字。语法格式为:</p>
+<blockquote>
+<p>typealias 类型别名 = 已经类型</p>
+</blockquote>
+<p>举个例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typealias  anyTypeAlias = ArrayList&lt;Any&gt;</span><br><span class="line"></span><br><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var anyTypeAlias = anyTypeAlias()</span><br><span class="line">    anyTypeAlias.size</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Kotlin中建立Kotlin类与Java类中的关系就是使用了typealias关键字。</p>
+<p>typealias还可以为Lambda表达式建立别名。例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typealias  AnyTypeAlias = ArrayList&lt;Any&gt;</span><br><span class="line">typealias LambdaTypeAlias&lt;T&gt; = (T) -&gt; Boolean</span><br><span class="line"></span><br><span class="line">fun main(args: Array&lt;String&gt;) &#123;</span><br><span class="line">    var anyTypeAlias = AnyTypeAlias()</span><br><span class="line">    anyTypeAlias.size</span><br><span class="line">    var l: LambdaTypeAlias&lt;AnyTypeAlias&gt; = &#123; it.size &gt; 3 &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://yoursite.com">ff520</a>
+            </p><p>原文链接：<a href="http://yoursite.com/2018/11/15/Kotlin_1/">http://yoursite.com/2018/11/15/Kotlin_1/</a>
+            </p><p>发表日期：<a href="http://yoursite.com/2018/11/15/Kotlin_1/">November 15th 2018, 1:34:11 pm</a>
+            </p><p>更新日期：<a href="http://yoursite.com/2018/11/15/Kotlin_1/">November 15th 2018, 1:34:11 pm</a>
+            </p><p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2018/11/07/git/" title="git 命令清单">
+                    <div class="prevTitle">git 命令清单</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:fuxingrxd@126.com" class="iconfont-archer email" title="email"></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/rxdff" class="iconfont-archer github" target="_blank" title="github"></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title="wechat">
+                  
+                  <img class="profile-qr" src="/assets/example_qr.png">
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kotlin-语法指北-一"><span class="toc-number">1.</span> <span class="toc-text">Kotlin 语法指北(一)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#初识Kotlin"><span class="toc-number">1.1.</span> <span class="toc-text">初识Kotlin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kotlin基础类型"><span class="toc-number">1.2.</span> <span class="toc-text">Kotlin基础类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#整形"><span class="toc-number">1.2.1.</span> <span class="toc-text">整形</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浮点型"><span class="toc-number">1.2.2.</span> <span class="toc-text">浮点型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符型"><span class="toc-number">1.2.3.</span> <span class="toc-text">字符型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数值型之间的类型转换"><span class="toc-number">1.2.4.</span> <span class="toc-text">数值型之间的类型转换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#整形之间的转换"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">整形之间的转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#浮点型与整形之间的转换"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">浮点型与整形之间的转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#表达式用的类型提示"><span class="toc-number">1.2.4.3.</span> <span class="toc-text">表达式用的类型提示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boolean类型"><span class="toc-number">1.2.5.</span> <span class="toc-text">Boolean类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#null安全"><span class="toc-number">1.2.6.</span> <span class="toc-text">null安全</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#非空类型与可空类型"><span class="toc-number">1.2.6.1.</span> <span class="toc-text">非空类型与可空类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安全调用"><span class="toc-number">1.2.6.2.</span> <span class="toc-text">安全调用 ?.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Elvis运算"><span class="toc-number">1.2.6.3.</span> <span class="toc-text">Elvis运算 ?:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#强制调用"><span class="toc-number">1.2.6.4.</span> <span class="toc-text">强制调用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串"><span class="toc-number">1.2.7.</span> <span class="toc-text">字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串模版"><span class="toc-number">1.2.8.</span> <span class="toc-text">字符串模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类型别名"><span class="toc-number">1.2.9.</span> <span class="toc-text">类型别名</span></a></li></ol></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 4
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/15</span><a class="archive-post-title" href="/2018/11/15/Kotlin_1/">Kotlin 语法指北</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/07</span><a class="archive-post-title" href="/2018/11/07/git/">git 命令清单</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span><a class="archive-post-title" href="/2018/11/06/markdown/">写给自己的Markdown使用指南</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/05</span><a class="archive-post-title" href="/2018/11/05/hello-world/">Hello world</a>
+        </li>
+    
+    </ul></div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="MarkDown"><span class="iconfont-archer">&#xe606;</span>MarkDown</span>
+    
+        <span class="sidebar-tag-name" data-tags="使用指南"><span class="iconfont-archer">&#xe606;</span>使用指南</span>
+    
+        <span class="sidebar-tag-name" data-tags="Git"><span class="iconfont-archer">&#xe606;</span>Git</span>
+    
+        <span class="sidebar-tag-name" data-tags="Kotlin"><span class="iconfont-archer">&#xe606;</span>Kotlin</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br>
+    1、请确保node版本大于6.2<br>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="技术"><span class="iconfont-archer">&#xe60a;</span>技术</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "ff520"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
