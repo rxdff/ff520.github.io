@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>git 命令清单 · ff520 Blog</title>
+    <title>三分钟写一个简单的Gradle-Plguin插件 · ff520 Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -217,7 +217,7 @@
                 <a href="/">ff520 Blog.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">git 命令清单</a>
+                <a href="#" class="post-name">三分钟写一个简单的Gradle-Plguin插件</a>
             </div>
     </div>
     
@@ -247,7 +247,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            git 命令清单
+            三分钟写一个简单的Gradle-Plguin插件
             <!-- 404 -->
             
         </h1>
@@ -266,20 +266,20 @@ height:50vh;
                 
                     <div class="post-intro-tags">
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="Git">Git</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="Gradle">Gradle</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="使用指南">使用指南</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="自定义插件">自定义插件</a>
     
 </div>
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.3k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2018/11/07</span>
+                    <span class="post-intro-time">2018/11/30</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -403,274 +403,65 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="git-命令清单"><a href="#git-命令清单" class="headerlink" title="git 命令清单"></a>git 命令清单</h1><p>随着项目发展扩大，用android studio原生的代码管理工具越来越不方便了，是时候用git命令来操作一番了。</p>
-<h2 id="git代码仓库图解"><a href="#git代码仓库图解" class="headerlink" title="git代码仓库图解"></a>git代码仓库图解</h2><p><img src="https://i.loli.net/2018/11/07/5be299c857acf.png" alt="Git Respostory"></p>
-<p>几个专用名词的译名如下</p>
-<blockquote>
+        <h1 id="Gradle自定义插件"><a href="#Gradle自定义插件" class="headerlink" title="Gradle自定义插件"></a>Gradle自定义插件</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>先了解一下Gradle,Gradle可以说是一种构建框架，每一个待构建的工程都是一个Project,构建一个Project会执行若干的Task。而若干工程会构建一个APK。这些工作都是在Gradle这个框架里完成的。简单来说，就是一个APK的打包会执行许多Task。</p>
+<p>我们在进行Android开发时，都会使用Gradle进行项目配置，通常在对应的module:app的build.gradle中,最上面一句话通常都是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br></pre></td></tr></table></figure>
+<p>这实际上就是加载了一个Android的Gradle插件来进行Android的编译打包工作。我们在build.gradle中写的各种配置会被这些插件作为参数进行处理。比如下面的配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion 28</span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        applicationId &quot;ff.inject&quot;</span><br><span class="line">        minSdkVersion 15</span><br><span class="line">        targetSdkVersion 28</span><br><span class="line">        versionCode 1</span><br><span class="line">        versionName &quot;1.0&quot;</span><br><span class="line">        testInstrumentationRunner &quot;android.support.test.runner.AndroidJUnitRunner&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false</span><br><span class="line">            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于Android的Plguin更多用法详见:<a href="http://google.github.io/android-gradle-dsl/current/" target="_blank" rel="noopener">Android Plugin DSL Reference</a></p>
+<p>总之，Gradle自定义插件其实就是构建Task并执行Task。通过自定义插件我们可以对Android的编译及打包做一些干涉及在处理。</p>
+<h2 id="如何自定义插件"><a href="#如何自定义插件" class="headerlink" title="如何自定义插件"></a>如何自定义插件</h2><p>Gradle是采用Groovy语言，编写Gradle插件主要有三种方法</p>
+<h3 id="Build-Script"><a href="#Build-Script" class="headerlink" title="Build Script"></a>Build Script</h3><p> build.gradle脚本中直接使用。这种方式就是直接在Android Studio app moudle的build.gradle中进行插件的编写。</p>
 <ul>
-<li>Workspace：工作区</li>
-<li>Index / Stage：暂存区</li>
-<li>Repository：仓库区（或本地仓库）</li>
-<li>Remote：远程仓库</li>
+<li>优点就是不用再上传插件到maven或者其它地方，项目就可以直接使用。</li>
+<li>缺点也是很明显，只能在声明的这个build.gradle中使用，不能复用。</li>
 </ul>
-</blockquote>
-<h2 id="git常用命令"><a href="#git常用命令" class="headerlink" title="git常用命令"></a>git常用命令</h2><h3 id="新建代码库"><a href="#新建代码库" class="headerlink" title="新建代码库"></a>新建代码库</h3><p>在当前目录新建一个Git代码库</p>
-<blockquote>
-<p>$ git init</p>
-</blockquote>
-<p>新建一个目录，将其初始化为Git代码库</p>
-<blockquote>
-<p>git init [project-name]</p>
-</blockquote>
-<p>下载一个项目和它的整个代码历史</p>
-<blockquote>
-<p>git clone [url]</p>
-</blockquote>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>显示当前的Git配置</p>
-<blockquote>
-<p>git config –list</p>
-</blockquote>
-<p>编辑Git全局配置文件</p>
-<blockquote>
-<p>git config –global -e </p>
-</blockquote>
-<p>设置提交代码时的用户信息</p>
-<blockquote>
-<p>git config [–global] user.name “[name]”</p>
-<p>git config [–global] user.email “[email address]”</p>
-</blockquote>
-<h3 id="增加-删除文件"><a href="#增加-删除文件" class="headerlink" title="增加/删除文件"></a>增加/删除文件</h3><p>添加指定文件到暂存区</p>
-<blockquote>
-<p>git add [file1] [file2] …</p>
-</blockquote>
-<p>添加指定目录到暂存区，包括子目录</p>
-<blockquote>
-<p>git add [dir]</p>
-</blockquote>
-<p>添加当前目录的所有文件到暂存区</p>
-<blockquote>
-<p>git add .</p>
-</blockquote>
-<p>删除工作区文件，并且将这次删除放入暂存区</p>
-<blockquote>
-<p>git rm [file1] [file2] …</p>
-</blockquote>
-<p>停止追踪指定文件，但该文件会保留在工作区</p>
-<blockquote>
-<p>git rm –cached [file]</p>
-</blockquote>
-<p>改名文件，并且将这个改名放入暂存区</p>
-<blockquote>
-<p>git mv [file-original] [file-renamed]</p>
-</blockquote>
-<h3 id="代码提交"><a href="#代码提交" class="headerlink" title="代码提交"></a>代码提交</h3><p>提交暂存区到仓库区</p>
-<blockquote>
-<p>git commit -m [message]</p>
-</blockquote>
-<p>提交暂存区的指定文件到仓库区</p>
-<blockquote>
-<p>git commit [file1] [file2] … -m [message]</p>
-</blockquote>
-<p>提交工作区自上次commit之后的变化，直接到仓库区</p>
-<blockquote>
-<p>git commit -a</p>
-</blockquote>
-<p>使用一次新的commit，替代上一次提交<br>如果代码没有任何新变化，则用来改写上一次commit的提交信息</p>
-<blockquote>
-<p>git commit –amend -m [message]</p>
-</blockquote>
-<p>重做上一次commit，并包括指定文件的新变化</p>
-<blockquote>
-<p>git commit –amend [file1] [file2] …</p>
-</blockquote>
-<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><p>列出所有本地分支</p>
-<blockquote>
-<p>git branch</p>
-</blockquote>
-<p>列出所有远程分支</p>
-<blockquote>
-<p>git branch -r</p>
-</blockquote>
-<p>列出所有本地分支和远程分支</p>
-<blockquote>
-<p>git branch -a</p>
-</blockquote>
-<p>新建一个分支，但依然停留在当前分支</p>
-<blockquote>
-<p>git branch [branch-name]</p>
-</blockquote>
-<p>新建一个分支，并切换到该分支</p>
-<blockquote>
-<p>git checkout -b [branch]</p>
-</blockquote>
-<p>新建一个分支，指向指定commit</p>
-<blockquote>
-<p>git branch [branch] [commit]</p>
-</blockquote>
-<p>新建一个分支，与指定的远程分支建立追踪关系</p>
-<blockquote>
-<p>git branch –track [branch] [remote-branch]</p>
-</blockquote>
-<p>合并指定分支到当前分支</p>
-<blockquote>
-<p>git merge [branch]</p>
-</blockquote>
-<p>选择一个commit，合并进当前分支</p>
-<blockquote>
-<p>git cherry-pick [commit]</p>
-</blockquote>
-<p>删除分支</p>
-<blockquote>
-<p>git branch -d [branch-name]</p>
-</blockquote>
-<p>删除远程分支</p>
-<blockquote>
-<p>git push origin –delete [branch-name]<br>git branch -dr [remote/branch]</p>
-</blockquote>
-<p>追踪分支</p>
-<blockquote>
-<p>git -t origin/[branch-name]</p>
-</blockquote>
-<h3 id="查看信息"><a href="#查看信息" class="headerlink" title="查看信息"></a>查看信息</h3><p>显示有变更的文件</p>
-<blockquote>
-<p>git status</p>
-</blockquote>
-<p>显示当前分支的版本历史</p>
-<blockquote>
-<p>git log</p>
-</blockquote>
-<p>显示commit历史，以及每次commit发生变更的文件</p>
-<blockquote>
-<p>git log –stat</p>
-</blockquote>
-<p>搜索提交历史，根据关键词</p>
-<blockquote>
-<p>git log -S [keyword]</p>
-</blockquote>
-<p>显示某个commit之后的所有变动，每个commit占据一行</p>
-<blockquote>
-<p>git log [tag] HEAD –pretty=format:%s</p>
-</blockquote>
-<p>显示某个文件的版本历史，包括文件改名</p>
-<blockquote>
-<p>git log –follow [file]<br>git whatchanged [file]</p>
-</blockquote>
-<p>显示指定文件相关的每一次diff</p>
-<blockquote>
-<p>git log -p [file]</p>
-</blockquote>
-<p>显示过去5次提交</p>
-<blockquote>
-<p>git log -5 –pretty –oneline</p>
-</blockquote>
-<p>显示暂存区和工作区的差异</p>
-<blockquote>
-<p>git diff</p>
-</blockquote>
-<p>显示暂存区和上一个commit的差异</p>
-<blockquote>
-<p>git diff –cached [file]</p>
-</blockquote>
-<p>显示工作区与当前分支最新commit之间的差异</p>
-<blockquote>
-<p>git diff HEAD</p>
-</blockquote>
-<p>显示两次提交之间的差异</p>
-<blockquote>
-<p>git diff [first-branch]…[second-branch]</p>
-</blockquote>
-<h3 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h3><p>下载远程仓库的所有变动</p>
-<blockquote>
-<p>git fetch [remote]</p>
-</blockquote>
-<p>显示所有远程仓库</p>
-<blockquote>
-<p>git remote -v</p>
-</blockquote>
-<p>显示某个远程仓库的信息</p>
-<blockquote>
-<p>git remote show [remote]</p>
-</blockquote>
-<p>取回远程仓库的变化，并与本地分支合并</p>
-<blockquote>
-<p>git pull [remote] [branch]</p>
-</blockquote>
-<p>上传本地指定分支到远程仓库</p>
-<blockquote>
-<p>git push [remote] [branch]</p>
-</blockquote>
-<p>强行推送当前分支到远程仓库，即使有冲突</p>
-<blockquote>
-<p>git push [remote] –force</p>
-</blockquote>
-<p>如果创建的本地分支，远端并没有，那么可能会出现错误</p>
-<p>error: src refspec xxx does not match any.<br>error: failed to push some refs to ‘xxx’</p>
-<p>那么加headhou进行远程分支的创建</p>
-<blockquote>
-<p>git push origin head:branch_name</p>
-</blockquote>
-<h3 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h3><p>恢复暂存区的指定文件到工作区</p>
-<blockquote>
-<p>git checkout [file]</p>
-</blockquote>
-<p>恢复某个commit的指定文件到暂存区和工作区</p>
-<blockquote>
-<p>git checkout [commit] [file]</p>
-</blockquote>
-<p>恢复暂存区的所有文件到工作区</p>
-<blockquote>
-<p>git checkout .</p>
-</blockquote>
-<p>重置暂存区的指定文件，与上一次commit保持一致，但工作区不变</p>
-<blockquote>
-<p> git reset [file]</p>
-</blockquote>
-<p>重置暂存区与工作区，与上一次commit保持一致</p>
-<blockquote>
-<p>git reset –hard</p>
-</blockquote>
-<p>重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变</p>
-<blockquote>
-<p>git reset [commit]</p>
-</blockquote>
-<p>重置当前分支的HEAD为指定commit，同时重置暂存区和工作区，与指定commit一致</p>
-<blockquote>
-<p>git reset –hard [commit]</p>
-</blockquote>
-<p>重置当前HEAD为指定commit，但保持暂存区和工作区不变</p>
-<blockquote>
-<p>git reset –keep [commit]</p>
-</blockquote>
-<p>新建一个commit，用来撤销指定commit<br>后者的所有变化都将被前者抵消，并且应用到当前分支</p>
-<blockquote>
-<p>git revert [commit]</p>
-</blockquote>
-<p>暂时将未提交的变化移除，稍后再移入</p>
-<blockquote>
-<p>git stash<br>git stash pop</p>
-</blockquote>
-<p>关于 git reset补充<br>git reset –soft HEAD~1  表示撤销上一个版本的commit 并且不撤销add操作，不删除工作空间代码</p>
-<blockquote>
-<p>–mixed 不删除工作空间改动代码，撤销commit，并且撤销git add . 操作</p>
-</blockquote>
-<blockquote>
-<p>–soft 不删除工作空间改动代码，撤销commit，不撤销git add .</p>
-</blockquote>
-<blockquote>
-<p>–hard 删除工作空间改动代码，撤销commit，撤销git add .<br>注意完成这个操作后，就恢复到了上一次的commit状态。 </p>
-</blockquote>
-<blockquote>
-<p>HEAD~N 表示操作的次数 HEAD~2表示撤销两个commit</p>
-</blockquote>
+<h3 id="BuildSrc"><a href="#BuildSrc" class="headerlink" title="BuildSrc"></a>BuildSrc</h3><p>这种方式需要在项目中新建一个model命名为buildSrc，这个目录就用来存放自定义插件。然后在src/main中建立两个目录，一个就是存放代码的groovy目录，一个是存放自定义插件名称的resources目录。</p>
+<ul>
+<li>优点与Build Script类似，不需要上传插件。插件对工程内所有模块可见</li>
+<li>缺点其实还是复用性的问题，如果一个插件会被许多工程复用，那么这种方式就不实用了。</li>
+</ul>
+<h3 id="Standalone"><a href="#Standalone" class="headerlink" title="Standalone"></a>Standalone</h3><p>上面的两种方式就不介绍了，本文重点介绍下这种方式。这种方法就是使用单独的一个工程/模块创建我们的Gradle插件，这种方法会构建和发表一个JAR文件，可以提供给多工程构建和其他开发者共同使用。</p>
+<h4 id="如何编写"><a href="#如何编写" class="headerlink" title="如何编写"></a>如何编写</h4><ol>
+<li>首先，创建一个Moudle,无所谓是什么Moudle,反正最后都要删的。</li>
+<li>删除掉目录下除了 src/main和 build.gradle 之外的其他内容，把 build.gradle 内容清空。<br><img src="https://i.loli.net/2018/11/30/5c0112a2324e1.png" alt="step2"></li>
+<li>在 src/main/ 目录下创建一个groovy目录。用于存放 Gradle-Plugin代码。在 src/main/ 目录下创建 resources文件夹，继续在resources下创建META-INF文件夹，继续在 META-INF 文件夹下创建 gradle-plugins 文件夹，最后在 gradle-plugins 文件夹下创建一个 xxx.properties 文件，注意：这个 xxx 就是在 app 下的 build.gradle 中引入时的名字，例如：apply plugin: ‘xxx’。<br><img src="https://i.loli.net/2018/11/30/5c0112a247a4e.png" alt="step3"></li>
+<li>按自己的需求修改当前Moudle的build.gradle。</li>
+</ol>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">	apply plugin: &apos;groovy&apos;</span><br><span class="line">	apply plugin: &apos;maven&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	dependencies &#123;</span><br><span class="line">    	//gradle sdk</span><br><span class="line">    	compile gradleApi()</span><br><span class="line">    	//groovy sdk</span><br><span class="line">    	compile localGroovy()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	repositories &#123;</span><br><span class="line">    	mavenCentral()</span><br><span class="line">	&#125;</span><br><span class="line">	//以上都为固定写法</span><br><span class="line"></span><br><span class="line">	//group和version 替换成自己的group及version</span><br><span class="line">	group=&apos;ff.tools.inject&apos;</span><br><span class="line">	version=&apos;1.0.1&apos;</span><br><span class="line"></span><br><span class="line">	//打包到本地或者远程Maven库</span><br><span class="line">	uploadArchives &#123;</span><br><span class="line">    	repositories &#123;</span><br><span class="line">        	mavenDeployer &#123;</span><br><span class="line">            //提交到远程服务器：</span><br><span class="line">            // repository(url: &quot;http://www.xxx.com/repos&quot;) &#123;</span><br><span class="line">           	// authentication(userName: &quot;admin&quot;, password: &quot;admin&quot;)</span><br><span class="line">            // &#125;</span><br><span class="line">            //本地的Maven地址设置为E:/Maven</span><br><span class="line">            repository(url: uri(&apos;../repo&apos;))</span><br><span class="line">        &#125;</span><br><span class="line">   	  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><ol start="5">
+<li><p>在groovy创建我们的包和groovy文件，记得后缀一定要已 .groovy结尾，否则插件是无效的。在这个文件内引入包名，写一个class实现Plugin<project>接口。</project></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">package ff.tools.inject</span><br><span class="line"></span><br><span class="line">import org.gradle.api.Plugin</span><br><span class="line">import org.gradle.api.Project</span><br><span class="line"></span><br><span class="line">public class CodeInjectPlugin implements Plugin&lt;Project&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    void apply(Project project) &#123;</span><br><span class="line">        System.out.println(&quot;------------------开始----------------------&quot;)</span><br><span class="line">        System.out.println(&quot;这是我们的自定义插件!&quot;)</span><br><span class="line">        System.out.println(&quot;------------------结束-----------------------&gt;&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在第三步中创建的xxx.properties里填写第五步的全类名。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation-class=ff.tools.inject.CodeInjectPlugin</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>7.打开Android Studio右边的Gradle面板，找到你的Moudle中的upload选项，有个uploadArchives的Task，点击就能上传到maven上了，目前配置是本地的maven。</p>
+<p><img src="https://i.loli.net/2018/11/30/5c0117edf038b.png" alt="step7"></p>
+<p>一个简单的自定义Gradle-Plugin就完成了。</p>
+<h4 id="如何应用"><a href="#如何应用" class="headerlink" title="如何应用"></a>如何应用</h4><ul>
+<li>在项目的根build.gradle增加一个classpath</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classpath &apos;ff.tools.inject:codeinject-plugin:1.0.1&apos;</span><br></pre></td></tr></table></figure>
+<p>可以看到ff.tools.inject:codeinject-plugin:1.0.1被 : 分成了三段。</p>
+<p>第一段是插件的gradle中的 group<br>第二段是当前工程名<br>第三段是插件的gradle中的 version</p>
+<ul>
+<li>在需要插件Moudle的build.gradle里加上</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;ff.tools.inject&apos;</span><br></pre></td></tr></table></figure>
+<p>ff.tools.inject就是插件Moudle中的gradle-plugins的properties的文件名。</p>
+<h4 id="运行一下"><a href="#运行一下" class="headerlink" title="运行一下"></a>运行一下</h4><p><img src="https://i.loli.net/2018/11/30/5c011c0b52958.png" alt="result"></p>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>笔者这里遇到个问题，以前Android Studio 2.0有个Gradle Console 可视化窗口可以看到gradle的日志。Android Studio 3.0有没有可视化窗口可以查看gradle的日志？有谁知道可以留言告知一下。</p>
 
     </article>
     <!-- license  -->
     
         <div class="license-wrapper">
             <p>原文作者：<a href="http://yoursite.com">ff520</a>
-            </p><p>原文链接：<a href="http://yoursite.com/2018/11/07/git/">http://yoursite.com/2018/11/07/git/</a>
-            </p><p>发表日期：<a href="http://yoursite.com/2018/11/07/git/">November 7th 2018, 3:54:50 pm</a>
-            </p><p>更新日期：<a href="http://yoursite.com/2018/11/07/git/">November 9th 2018, 3:02:14 pm</a>
+            </p><p>原文链接：<a href="http://yoursite.com/2018/11/30/gradle-plugin/">http://yoursite.com/2018/11/30/gradle-plugin/</a>
+            </p><p>发表日期：<a href="http://yoursite.com/2018/11/30/gradle-plugin/">November 30th 2018, 7:20:30 pm</a>
+            </p><p>更新日期：<a href="http://yoursite.com/2018/11/30/gradle-plugin/">November 30th 2018, 7:20:30 pm</a>
             </p><p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -678,17 +469,12 @@ height:50vh;
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href="/2018/11/15/Kotlin_1/" title="Kotlin 语法指北(一)">
-                    <div class="nextTitle">Kotlin 语法指北(一)</div>
-                </a>
-            
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/2018/11/06/markdown/" title="写给自己的Markdown使用指南">
-                    <div class="prevTitle">写给自己的Markdown使用指南</div>
+                <a href="/2018/11/18/kotlin_2/" title="Kotlin 语法指北(二)">
+                    <div class="prevTitle">Kotlin 语法指北(二)</div>
                 </a>
             
         </li>
@@ -807,7 +593,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#git-命令清单"><span class="toc-number">1.</span> <span class="toc-text">git 命令清单</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#git代码仓库图解"><span class="toc-number">1.1.</span> <span class="toc-text">git代码仓库图解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git常用命令"><span class="toc-number">1.2.</span> <span class="toc-text">git常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建代码库"><span class="toc-number">1.2.1.</span> <span class="toc-text">新建代码库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">1.2.2.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加-删除文件"><span class="toc-number">1.2.3.</span> <span class="toc-text">增加/删除文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码提交"><span class="toc-number">1.2.4.</span> <span class="toc-text">代码提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分支"><span class="toc-number">1.2.5.</span> <span class="toc-text">分支</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看信息"><span class="toc-number">1.2.6.</span> <span class="toc-text">查看信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#远程同步"><span class="toc-number">1.2.7.</span> <span class="toc-text">远程同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#撤销"><span class="toc-number">1.2.8.</span> <span class="toc-text">撤销</span></a></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Gradle自定义插件"><span class="toc-number">1.</span> <span class="toc-text">Gradle自定义插件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何自定义插件"><span class="toc-number">1.2.</span> <span class="toc-text">如何自定义插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Build-Script"><span class="toc-number">1.2.1.</span> <span class="toc-text">Build Script</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BuildSrc"><span class="toc-number">1.2.2.</span> <span class="toc-text">BuildSrc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Standalone"><span class="toc-number">1.2.3.</span> <span class="toc-text">Standalone</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何编写"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">如何编写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何应用"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">如何应用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行一下"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">运行一下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#最后"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">最后</span></a></li></ol></li></ol></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
